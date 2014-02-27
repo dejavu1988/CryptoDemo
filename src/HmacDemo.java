@@ -14,6 +14,20 @@ public class HmacDemo {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Encode the plain text to given type of HMAC 
+	 * (Hash-based Message Authentication Code) string
+	 * 
+	 * @param text the plain text to be encoded
+	 * @param key the secret key string
+	 * @param type the HMAC algorithm name from 
+	 * {hmacmd5, hmacsha1, hmacsha256, hmacsha384, hmacsha512}
+	 * 
+	 * @return the encoded string
+	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeyException
+	 */
 	public static String HmacTextEncode(String text, String key, String type) throws 
     UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
 
