@@ -31,13 +31,13 @@ public class HmacDemo {
 	public static String HmacTextEncode(String text, String key, String type) throws 
     UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
 
-	    SecretKeySpec secretKey = new SecretKeySpec((key).getBytes("UTF-8"), type);
+	    SecretKeySpec secretKey = new SecretKeySpec(key.getBytes("UTF-8"), type);
 	    Mac hmac = Mac.getInstance(type);
 	    hmac.init(secretKey);
 	
-	    byte[] bytes = hmac.doFinal(text.getBytes("UTF-8"));
+	    byte[] digest = hmac.doFinal(text.getBytes("UTF-8"));
 	
-	    return new String( Base64.encodeBase64(bytes) );
+	    return new String( Base64.encodeBase64(digest) );
 	}
 	
 	public static void main(String[] args) {

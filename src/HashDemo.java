@@ -1,5 +1,8 @@
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.xml.bind.DatatypeConverter;
 
 
 public class HashDemo {
@@ -22,18 +25,29 @@ public class HashDemo {
 	    // Create MD5 Hash
         MessageDigest digest = java.security.MessageDigest.getInstance(algorithm);
         digest.update(text.getBytes());
-        byte messageDigest[] = digest.digest();
+        byte[] messageDigest = digest.digest();
 
-        // Create Hex String
-        StringBuilder hexString = new StringBuilder();
-        for (byte mDigest : messageDigest) {
-            String h = Integer.toHexString(0xFF & mDigest);
-            while (h.length() < 2){
-            	h = "0" + h;
-            }	                
-            hexString.append(h);
-        }
-        return hexString.toString();
+        return toHexString(messageDigest);
+	}
+	
+	/**
+	 * Converts byte array to hex string
+	 * 
+	 * @param bytes the byte array
+	 * @return the converted hex string
+	 */
+	public static String toHexString(byte[] array) {
+	    return DatatypeConverter.printHexBinary(array);
+	}
+	
+	/**
+	 * Converts hex string to byte array
+	 * 
+	 * @param hexString the hex string
+	 * @return the converted byte array
+	 */
+	public static byte[] toByteArray(String s) {
+	    return DatatypeConverter.parseHexBinary(s);
 	}
 	
 	public static void main(String[] args) {
@@ -41,11 +55,12 @@ public class HashDemo {
 		String text = "This is my test string.";
 		String textEncoded = "";
 		try {
-			textEncoded = HashDemo.HashTextEncode(text, "sha-512");
+			textEncoded = HashDemo.HashTextEncode(text, "sha-1");
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("No Such Algorithm");
 		}
 		System.out.println(textEncoded);
+		
 	}
 
 }
