@@ -33,10 +33,54 @@ public class AesDemo {
     private static final String SECRET_KEY_ALGORITHM = "AES";
     private static final String HMAC_KEY_ALGORITHM = "HMACSHA256";
     
-    private static byte[] salt;
-    private static byte[] secretKey;
+    private static byte[] salt = null;
+    private static byte[] secretKey = null;
     
 	public AesDemo() {
+	}
+	
+	/**
+	 * Encrypts text using secret key with AES-256 algorithm
+	 * after secret key is generated.
+	 * 
+	 * @param text the cleartext to be encrypted
+	 * @return the 2-element String array: the 1st element is ciphertext
+	 * , the 2nd element is the HMAC of ciphertext.
+	 * @throws InvalidKeyException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String[] encryptGivenKey(byte[] text) throws 
+	InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, 
+	InvalidAlgorithmParameterException, IllegalBlockSizeException, 
+	BadPaddingException, UnsupportedEncodingException {
+		return encrypt(secretKey, text);
+	}
+	
+	/**
+	 * Decrypts the encrypted text using secret key with AES-256 algorithm
+	 * after secret key is generated.
+	 * 
+	 * @param ciphertext the 2-element String array: the 1st element is ciphertext
+	 * , the 2nd element is the HMAC of ciphertext.
+	 * @return decrypted byte array
+	 * @throws InvalidKeyException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static byte[] decryptGivenKey(String[] ciphertext) throws 
+	InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, 
+	InvalidAlgorithmParameterException, IllegalBlockSizeException, 
+	BadPaddingException, UnsupportedEncodingException {
+		return decrypt(secretKey, ciphertext);
 	}
 	
 	/**
@@ -231,7 +275,7 @@ public class AesDemo {
 		
 		
 		try {
-			cipherText = encrypt(secretKey, text.getBytes("UTF-8"));
+			cipherText = encryptGivenKey(text.getBytes("UTF-8"));
 		} catch (InvalidKeyException | NoSuchAlgorithmException
 				| NoSuchPaddingException | InvalidAlgorithmParameterException
 				| IllegalBlockSizeException | BadPaddingException
@@ -244,7 +288,7 @@ public class AesDemo {
 		System.out.println("HMAC: " + cipherText[1]);
 		
 		try {
-			decipherText = decrypt(secretKey, cipherText);
+			decipherText = decryptGivenKey(cipherText);
 		} catch (InvalidKeyException | NoSuchAlgorithmException
 				| NoSuchPaddingException | InvalidAlgorithmParameterException
 				| IllegalBlockSizeException | BadPaddingException
