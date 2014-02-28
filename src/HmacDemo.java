@@ -28,25 +28,25 @@ public class HmacDemo {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeyException
 	 */
-	public static String HmacTextEncode(String text, String key, String type) throws 
+	public static String hmac(byte[] text, byte[] key, String type) throws 
     UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
 
-	    SecretKeySpec secretKey = new SecretKeySpec(key.getBytes("UTF-8"), type);
+	    SecretKeySpec secretKey = new SecretKeySpec(key, type);
 	    Mac hmac = Mac.getInstance(type);
 	    hmac.init(secretKey);
 	
-	    byte[] digest = hmac.doFinal(text.getBytes("UTF-8"));
+	    byte[] digest = hmac.doFinal(text);
 	
-	    return new String( Base64.encodeBase64(digest) );
+	    return new String( Base64.encodeBase64URLSafeString(digest) );
 	}
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String text = "This is my test string.";
-		String key = "secret";
+		String keyPhrase = "secret";
 		String encodedText = "";
 		try {
-			encodedText = HmacDemo.HmacTextEncode(text, key, "hmacsha512");
+			encodedText = HmacDemo.hmac(text.getBytes("UTF-8"), keyPhrase.getBytes("UTF-8"), "hmacsha512");
 		} catch (InvalidKeyException e) {
 			System.out.println("Invalid Key");
 		} catch (UnsupportedEncodingException e) {
