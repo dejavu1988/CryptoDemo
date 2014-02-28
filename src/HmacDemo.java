@@ -16,7 +16,8 @@ public class HmacDemo {
 
 	/**
 	 * Encode the plain text to given type of HMAC 
-	 * (Hash-based Message Authentication Code) string
+	 * (Hash-based Message Authentication Code) string.
+	 * The default algorithm is hmacsha256.
 	 * 
 	 * @param text the plain text to be encoded
 	 * @param key the secret key string

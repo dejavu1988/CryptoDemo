@@ -19,18 +19,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
-/**
- * https://stackoverflow.com/questions/8622367/what-are-best-practices-for-using-aes-encryption-in-android
- * @author xzgao
- *
- */
 public class AesDemo {
 
 	//public static final String PROVIDER = "BC";
-    public static final int SALT_LENGTH = 20;
-    public static final int IV_LENGTH = 16;
-    public static final int PBE_ITERATION_COUNT = 1000;
-    public static final int KEY_LENGTH = 256;
+	private static final int SALT_LENGTH = 20;
+	private static final int IV_LENGTH = 16;
+	private static final int PBE_ITERATION_COUNT = 1000;
+	private static final int KEY_LENGTH = 256;
 
     private static final String RANDOM_ALGORITHM = "SHA1PRNG";
     private static final String PBE_ALGORITHM = "PBKDF2";
@@ -44,7 +39,22 @@ public class AesDemo {
 	public AesDemo() {
 	}
 	
-	public static String[] encrypt(byte[] secret, byte[] cleartext) throws 
+	/**
+	 * Encrypts text using secret key with AES-256 algorithm.
+	 * 
+	 * @param secret the secret key in byte array
+	 * @param text the cleartext to be encrypted
+	 * @return the 2-element String array: the 1st element is ciphertext
+	 * , the 2nd element is the HMAC of ciphertext.
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String[] encrypt(byte[] secret, byte[] text) throws 
 	NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, 
 	InvalidAlgorithmParameterException, IllegalBlockSizeException, 
 	BadPaddingException, UnsupportedEncodingException {
@@ -63,7 +73,7 @@ public class AesDemo {
         // Encrypt
         Cipher encryptionCipher = Cipher.getInstance(CIPHER_ALGORITHM);
         encryptionCipher.init(Cipher.ENCRYPT_MODE, secretKey1, ivspec);
-        byte[] encryptedText = encryptionCipher.doFinal(cleartext);
+        byte[] encryptedText = encryptionCipher.doFinal(text);
         // HMAC of encrypted text
         String hmac = HmacDemo.hmac(encryptedText, key2, HMAC_KEY_ALGORITHM);
         
@@ -76,7 +86,22 @@ public class AesDemo {
         return out;
 	}
 
-	public static String decrypt(byte[] secret, String[] encrypted) throws 
+	/**
+	 * Decrypts the encrypted text using secret key with AES-256 algorithm.
+	 * 
+	 * @param secret the secret key in byte array
+	 * @param encrypted the 2-element String array: the 1st element is ciphertext
+	 * , the 2nd element is the HMAC of ciphertext.
+	 * @return decrypted byte array
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchPaddingException
+	 * @throws InvalidKeyException
+	 * @throws InvalidAlgorithmParameterException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static byte[] decrypt(byte[] secret, String[] encrypted) throws 
 	NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, 
 	InvalidAlgorithmParameterException, IllegalBlockSizeException, 
 	BadPaddingException, UnsupportedEncodingException {
@@ -107,10 +132,20 @@ public class AesDemo {
         IvParameterSpec ivspec = new IvParameterSpec(iv);
         decryptionCipher.init(Cipher.DECRYPT_MODE, secretKey1, ivspec);
         byte[] decryptedText = decryptionCipher.doFinal(encryptedText);
-        String decrypted = new String(decryptedText, "UTF-8");
-        return decrypted;
+
+        return decryptedText;
 	}
 	
+	/**
+	 * Prepare secret key byte array from given password and salt
+	 * 
+	 * @param password the char array of password
+	 * @param salt salt in byte array
+	 * @return the secret key in byte array
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchProviderException
+	 */
 	public static byte[] getSecretKey(char[] password, byte[] salt) throws 
 	NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
 		PBEKeySpec pbeKeySpec = new PBEKeySpec(password, salt, PBE_ITERATION_COUNT, 2*KEY_LENGTH);
@@ -120,6 +155,12 @@ public class AesDemo {
         return tmp.getEncoded();
 	}
 
+	/**
+	 * Generate the salt
+	 * 
+	 * @return salt in byte array
+	 * @throws NoSuchAlgorithmException
+	 */
 	public static byte[] generateSalt() throws NoSuchAlgorithmException {
 		SecureRandom random = SecureRandom.getInstance(RANDOM_ALGORITHM);
         byte[] salt = new byte[SALT_LENGTH];
@@ -127,6 +168,12 @@ public class AesDemo {
         return salt;
 	}
 	
+	/**
+	 * Generate the IV
+	 * 
+	 * @return IV in byte array
+	 * @throws NoSuchAlgorithmException
+	 */
 	private static byte[] generateIv() throws NoSuchAlgorithmException {
         SecureRandom random = SecureRandom.getInstance(RANDOM_ALGORITHM);
         byte[] iv = new byte[IV_LENGTH];
@@ -141,7 +188,7 @@ public class AesDemo {
 		String text = "This is my test string.";
 		String password = "secret";
 		String[] cipherText = {};
-		String decipherText = "";
+		byte[] decipherText = null;
 		
 		try {
 			salt = generateSalt();
@@ -185,7 +232,12 @@ public class AesDemo {
 			System.exit(0);
 		}			
 		
-		System.out.println(decipherText);
+		try {
+			System.out.println(new String(decipherText, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

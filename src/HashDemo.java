@@ -1,4 +1,3 @@
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -12,7 +11,8 @@ public class HashDemo {
 	}
 
 	/**
-	 * Encode the plain text to given type of hash string
+	 * Encode the plain text to given type of hash string.
+	 * If type is empty, the default algorithm "sha-256" is chosen.
 	 * 
 	 * @param text the plain text to be hashed
 	 * @param type the hash algorithm name from {md5, sha-1, sha-256, sha-384, sha-512}
