@@ -184,22 +184,32 @@ public class AesDemo {
 	 * Prepares the secret key for AES encryption
 	 * 
 	 * @param passwd
+	 * @return secret key in byte array
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchProviderException
 	 */
-	public static void prepareSecretKey(String passwd) throws 
+	public static byte[] prepareSecretKey(String passwd) throws 
 	NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
 		secretKey = getSecretKey(passwd.toCharArray(), salt);
+		if (secretKey == null) {
+			throw new InvalidKeySpecException("Secret key is empty");
+		}
+		return secretKey;
 	}
 	
 	/**
 	 * Prepares salt
+	 * @return salt in byte array
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static void prepareSalt() throws NoSuchAlgorithmException {
+	public static byte[] prepareSalt() throws NoSuchAlgorithmException {
 		salt = generateSalt();
+		if (salt == null) {
+			throw new NoSuchAlgorithmException("Salt is empty");
+		}
+		return salt;
 	}
 	
 	/**

@@ -19,12 +19,15 @@ public class HashDemo {
 	 * @return the hashed string
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static final String HashTextEncode(final String text, final String type) throws NoSuchAlgorithmException {
-	    final String algorithm = type;
-	    
-	    // Create MD5 Hash
-        MessageDigest digest = java.security.MessageDigest.getInstance(algorithm);
-        digest.update(text.getBytes());
+	public static String hash(byte[] text, String type) throws 
+	NoSuchAlgorithmException {
+		String alg = type;
+		if (type == null || type.isEmpty()) {
+			alg = "sha-256";
+		}	    
+	    // Create Hash
+        MessageDigest digest = java.security.MessageDigest.getInstance(alg);
+        digest.update(text);
         byte[] messageDigest = digest.digest();
 
         return toHexString(messageDigest);
@@ -55,7 +58,7 @@ public class HashDemo {
 		String text = "This is my test string.";
 		String textEncoded = "";
 		try {
-			textEncoded = HashDemo.HashTextEncode(text, "sha-1");
+			textEncoded = HashDemo.hash(text.getBytes(), "");
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("No Such Algorithm");
 		}
