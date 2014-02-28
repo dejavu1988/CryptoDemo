@@ -137,6 +137,28 @@ public class AesDemo {
 	}
 	
 	/**
+	 * Prepares the secret key for AES encryption
+	 * 
+	 * @param passwd
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchProviderException
+	 */
+	public static void prepareSecretKey(String passwd) throws 
+	NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+		secretKey = getSecretKey(passwd.toCharArray(), salt);
+	}
+	
+	/**
+	 * Prepares salt
+	 * 
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static void prepareSalt() throws NoSuchAlgorithmException {
+		salt = generateSalt();
+	}
+	
+	/**
 	 * Prepare secret key byte array from given password and salt
 	 * 
 	 * @param password the char array of password
@@ -146,7 +168,7 @@ public class AesDemo {
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchProviderException
 	 */
-	public static byte[] getSecretKey(char[] password, byte[] salt) throws 
+	private static byte[] getSecretKey(char[] password, byte[] salt) throws 
 	NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
 		PBEKeySpec pbeKeySpec = new PBEKeySpec(password, salt, PBE_ITERATION_COUNT, 2*KEY_LENGTH);
 		SecretKeyFactory factory = SecretKeyFactory.getInstance(PBE_ALGORITHM);
@@ -161,7 +183,7 @@ public class AesDemo {
 	 * @return salt in byte array
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static byte[] generateSalt() throws NoSuchAlgorithmException {
+	private static byte[] generateSalt() throws NoSuchAlgorithmException {
 		SecureRandom random = SecureRandom.getInstance(RANDOM_ALGORITHM);
         byte[] salt = new byte[SALT_LENGTH];
         random.nextBytes(salt);
@@ -191,7 +213,7 @@ public class AesDemo {
 		byte[] decipherText = null;
 		
 		try {
-			salt = generateSalt();
+			prepareSalt();
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("Salt Generation Error");
 			e.printStackTrace();
@@ -199,7 +221,7 @@ public class AesDemo {
 		}
 		
 		try {
-			secretKey = getSecretKey(password.toCharArray(), salt);
+			prepareSecretKey(password);
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException
 				| NoSuchProviderException e) {
 			System.out.println("Key Generation Error");
