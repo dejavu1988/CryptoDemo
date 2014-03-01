@@ -28,9 +28,11 @@ public class HmacDemo {
 	 * @throws UnsupportedEncodingException
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeyException
+	 * @throws IllegalArgumentException
 	 */
 	public static String hmac(byte[] text, byte[] key, String type) throws 
-    UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException,
+    IllegalArgumentException {
 		String alg = type;
 		if (type == null || type.isEmpty()) {
 			alg = "hmacsha256";
@@ -41,22 +43,43 @@ public class HmacDemo {
 	
 	    byte[] digest = hmac.doFinal(text);
 	
-	    return new String( Base64.encodeBase64URLSafeString(digest) );
+	    return toHexString(digest);
+	    //return new String( Base64.encodeBase64URLSafeString(digest) );
 	}
+	
+	/**
+	   * Converts byte array to hex string
+	   * 
+	   * @param bytes the byte array
+	   * @return the converted hex string
+	   */
+	  public static String toHexString(byte[] bytes) {
+	    StringBuilder hexString = new StringBuilder();
+	    for (byte mDigest : bytes) {
+	      String h = Integer.toHexString(0xFF & mDigest);
+	      while (h.length() < 2){
+	        h = "0" + h;
+	      }
+	      hexString.append(h);
+	    }
+	    return hexString.toString();
+	  }
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String text = "This is my test string.";
-		String keyPhrase = "secret";
+		String text = "This is a test sentence.";
+		String keyPhrase = "";
 		String encodedText = "";
 		try {
-			encodedText = HmacDemo.hmac(text.getBytes("UTF-8"), keyPhrase.getBytes("UTF-8"), "");
+			encodedText = HmacDemo.hmac(text.getBytes("UTF-8"), keyPhrase.getBytes("UTF-8"), "hmacmd5");
 		} catch (InvalidKeyException e) {
 			System.out.println("Invalid Key");
 		} catch (UnsupportedEncodingException e) {
 			System.out.println("Unsupported Encoding");
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("No Such Algorithm");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Illegle Argument");
 		}
 		System.out.println(encodedText);
 	}

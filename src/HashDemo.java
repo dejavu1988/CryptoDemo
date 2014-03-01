@@ -55,10 +55,10 @@ public class HashDemo {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String text = "This is my test string.";
+		String text = "";
 		String textEncoded = "";
 		try {
-			textEncoded = HashDemo.hash(text.getBytes(), "");
+			textEncoded = HashDemo.hash(text.getBytes(), "md5");
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("No Such Algorithm");
 		}

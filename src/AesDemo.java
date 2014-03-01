@@ -113,7 +113,7 @@ public class AesDemo {
         System.arraycopy(secret, 0, key1, 0, key1.length);
         System.arraycopy(secret, key1.length, key2, 0, key2.length);        
         SecretKey secretKey1 = new SecretKeySpec(key1, 0, key1.length, SECRET_KEY_ALGORITHM);
-        
+        System.out.println("SecretKey in ENC: " + HmacDemo.toHexString(secretKey1.getEncoded()));
         // Encrypt
         Cipher encryptionCipher = Cipher.getInstance(CIPHER_ALGORITHM);
         encryptionCipher.init(Cipher.ENCRYPT_MODE, secretKey1, ivspec);
@@ -163,11 +163,11 @@ public class AesDemo {
         System.arraycopy(secret, 0, key1, 0, key1.length);
         System.arraycopy(secret, key1.length, key2, 0, key2.length);        
         SecretKey secretKey1 = new SecretKeySpec(key1, 0, key1.length, SECRET_KEY_ALGORITHM);
-        
+        System.out.println("SecretKey in DEC: " + HmacDemo.toHexString(secretKey1.getEncoded()));
         // HMAC of encrypted text
         String hmac = HmacDemo.hmac(encryptedText, key2, HMAC_KEY_ALGORITHM);
         System.out.println("HMAC2: " + hmac);
-        if (!hmac.equals(encrypted[1])) {
+        if (!hmac.equalsIgnoreCase(encrypted[1])) {
         	throw new IllegalArgumentException("HMAC not matching");
         }
         
@@ -188,6 +188,7 @@ public class AesDemo {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchProviderException
+	 * @throws IllegalArgumentException
 	 */
 	public static byte[] prepareSecretKey(String passwd) throws 
 	NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
@@ -221,6 +222,7 @@ public class AesDemo {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 * @throws NoSuchProviderException
+	 * @throws IllegalArgumentException
 	 */
 	private static byte[] getSecretKey(char[] password, byte[] salt) throws 
 	NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
@@ -262,7 +264,7 @@ public class AesDemo {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 		
 		String text = "This is my test string.";
-		String password = "secret";
+		String password = "";
 		String[] cipherText = {};
 		byte[] decipherText = null;
 		
@@ -278,8 +280,7 @@ public class AesDemo {
 			prepareSecretKey(password);
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException
 				| NoSuchProviderException e) {
-			System.out.println("Key Generation Error");
-			e.printStackTrace();
+			System.out.println("Key Generation Error: " + e.getMessage());
 			System.exit(0);
 		}
 		
