@@ -191,7 +191,7 @@ public class AesDemo {
 	 * @throws IllegalArgumentException
 	 */
 	public static byte[] prepareSecretKey(String passwd) throws 
-	NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+	NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException{
 		secretKey = getSecretKey(passwd.toCharArray(), salt);
 		if (secretKey == null) {
 			throw new InvalidKeySpecException("Secret key is empty");
@@ -264,7 +264,7 @@ public class AesDemo {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 		
 		String text = "This is my test string.";
-		String password = "";
+		String password = "gogogo";
 		String[] cipherText = {};
 		byte[] decipherText = null;
 		
